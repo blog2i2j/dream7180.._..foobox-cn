@@ -24,7 +24,14 @@ var LIST, BRW, VIS, BIO, VIDEO, active_p, active_pid;
 var p_tips = ['播放列表', '封面浏览器'];
 var show_status = true;
 var openhacks = utils.CheckComponent("foo_openhacks");
-if(openhacks) show_status = fb.IsMainMenuCommandChecked("视图/显示状态栏");
+if(openhacks){
+	try{
+		show_status = fb.IsMainMenuCommandChecked("视图/显示状态栏");
+	} catch(e){
+		show_status = true;
+		fb.ShowPopupMessage("foobox 中文版，请使用 openhacks 汉化版及 foobar2000 汉化版，否则该功能将受限制！", "openhacks 组件不匹配");
+	}
+}
 var cbkg_chroma = window.GetProperty("foobox.bgcolor.chroma", 4);
 
 //=====================================================

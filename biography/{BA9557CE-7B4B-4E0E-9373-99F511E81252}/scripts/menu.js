@@ -167,8 +167,6 @@ class MenuItems {
 			path: '',
 			text: '#!#'
 		}
-
-		this.playlists_changed();
 	}
 
 	// Methods
@@ -525,29 +523,6 @@ class MenuItems {
 
 		menu.addSeparator({});
 
-		if (ppt.menuShowPlaylists == 2 || ppt.menuShowPlaylists && this.shift) {
-			const pl_no = Math.ceil(this.playlist.menu.length / 30);
-			menu.newMenu({
-				menuName: lg['Playlists'],
-				separator: ppt.menuShowPlaylists == 2 || ppt.menuShowPlaylists && this.shift
-			});
-			for (let j = 0; j < pl_no; j++) {
-				const n = '# ' + (j * 30 + 1 + ' - ' + Math.min(this.playlist.menu.length, 30 + j * 30) + (30 + j * 30 > plman.ActivePlaylist && ((j * 30) - 1) < plman.ActivePlaylist ? '  >>>' : ''));
-				menu.newMenu({
-					menuName: n,
-					appendTo: lg['Playlists']
-				});
-				for (let i = j * 30; i < Math.min(this.playlist.menu.length, 30 + j * 30); i++) {
-					menu.newItem({
-						menuName: n,
-						str: this.playlist.menu[i].name,
-						func: () => this.setPlaylist(i),
-						checkRadio: i == plman.ActivePlaylist
-					});
-				}
-			}
-		}
-
 		if (ppt.menuShowTagger == 2 || ppt.menuShowTagger && this.shift) {
 			menu.newMenu({
 				menuName: lg['Tagger'],
@@ -576,14 +551,6 @@ class MenuItems {
 				func: () => this.checkMissingData(i),
 				separator: i == 2 || i == 5
 			}));
-		}
-
-		if (ppt.menuShowInactivate == 2 || ppt.menuShowInactivate && this.shift) {
-			menu.newItem({
-				str: ppt.panelActive ? lg['Inactivate'] : lg['Activate biography'],
-				func: () => panel.inactivate(),
-				separator: true
-			});
 		}
 
 		for (let i = 0; i < 2; i++) menu.newItem({
@@ -986,15 +953,6 @@ class MenuItems {
 		if (wsh) continue_confirmation('ok', $.wshPopup(prompt, caption));
 	}
 
-	playlists_changed() {
-		if (!ppt.menuShowPlaylists) return;
-		this.playlist.menu = [];
-		for (let i = 0; i < plman.PlaylistCount; i++) this.playlist.menu.push({
-			name: plman.GetPlaylistName(i).replace(/&/g, '&&'),
-			ix: i
-		});
-	}
-
 	popUpText(n2, n3) {
 		return `检查媒体库并创建播放列表：${n2} ${n3} 丢失\n\n将使用服务器设置。\n\n提示：此操作会分析大量数据。它可能会触发“无响应脚本”弹出窗口。如果发生这种情况，请选择“继续”或“不要再问我”。选择“停止脚本”将触发错误。\n\n继续？`;
 	}
@@ -1228,10 +1186,6 @@ class MenuItems {
 			ppt.set('SYSTEM.Photo Folder Checked', true);
 		}
 		img.updImages();
-	}
-
-	setPlaylist(i) {
-		plman.ActivePlaylist = this.playlist.menu[i].ix;
 	}
 
 	setReviewType(i) {
